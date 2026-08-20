@@ -22,7 +22,8 @@ services:
       timeout: 3s
       retries: 10
     depends_on:
-      - mlflow
+      mlflow:
+        condition: service_healthy
 
   web:
     build:
@@ -48,13 +49,20 @@ services:
       - --port
       - "5001"
       - --backend-store-uri
-      - sqlite:///data/mlflow.db
+      - sqlite:////data/mlflow.db
       - --default-artifact-root
       - /data/mlartifacts
+      - --allowed-hosts
+      - localhost,127.0.0.1,mlflow:5001
     ports:
       - "5001:5001"
     volumes:
       - mlflow-data:/data
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:5001/health')"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
 
 volumes:
   repomedic-data:

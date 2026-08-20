@@ -123,16 +123,17 @@ async def build_corpus(
         context = f"{issue.title}\n\n{issue.body}"
         if comment:
             context += f"\n\nFinal maintainer context:\n{comment}"
-        chunks.append(
-            CorpusChunk(
-                source_id=f"issue-{issue.number}",
-                source_kind=SourceKind.RESOLVED_ISSUE,
-                url=HttpUrl(issue.url),
-                repository_sha=sha,
-                issue_number=issue.number,
-                text=context,
+        for index, text in enumerate(chunk_text(context, 2_400)):
+            chunks.append(
+                CorpusChunk(
+                    source_id=f"issue-{issue.number}#{index}",
+                    source_kind=SourceKind.RESOLVED_ISSUE,
+                    url=HttpUrl(issue.url),
+                    repository_sha=sha,
+                    issue_number=issue.number,
+                    text=text,
+                )
             )
-        )
     return tuple(chunks)
 
 
@@ -147,22 +148,32 @@ def chunk_source(path: str, content: str, target_chars: int = 2_400) -> Iterable
             for node in tree.body
             if isinstance(node, (ast.ClassDef, ast.FunctionDef, ast.AsyncFunctionDef))
         ]
-        return tuple(chunk for chunk in chunks if chunk)
+        return tuple(part for chunk in chunks if chunk for part in chunk_text(chunk, target_chars))
     return chunk_text(content, target_chars)
 
 
 def chunk_text(content: str, target_chars: int) -> tuple[str, ...]:
-    paragraphs = content.split("\n\n")
+    if target_chars < 1:
+        raise ValueError("target_chars must be positive")
+    paragraphs = (
+        piece
+        for paragraph in content.split("\n\n")
+        for piece in (
+            paragraph[index : index + target_chars]
+            for index in range(0, max(len(paragraph), 1), target_chars)
+        )
+    )
     chunks: list[str] = []
     current: list[str] = []
     current_size = 0
     for paragraph in paragraphs:
-        if current and current_size + len(paragraph) > target_chars:
+        separator_size = 2 if current else 0
+        if current and current_size + separator_size + len(paragraph) > target_chars:
             chunks.append("\n\n".join(current))
             current = []
             current_size = 0
         current.append(paragraph)
-        current_size += len(paragraph)
+        current_size += (2 if len(current) > 1 else 0) + len(paragraph)
     if current:
         chunks.append("\n\n".join(current))
     return tuple(chunks)

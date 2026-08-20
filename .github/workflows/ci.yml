@@ -30,3 +30,17 @@ jobs:
     steps:
       - uses: actions/checkout@v6
       - run: docker compose build api web
+      - run: docker compose up -d --wait mlflow api
+      - name: Verify API can reach MLflow
+        run: >-
+          docker compose exec -T api python -c
+          "import urllib.request;
+          print(urllib.request.urlopen('http://mlflow:5001/api/3.0/mlflow/server-info').status)"
+      - name: Verify MLflow database uses its volume
+        run: >-
+          docker compose exec -T mlflow python -c
+          "import sqlite3;
+          connection=sqlite3.connect('file:/data/mlflow.db?mode=ro', uri=True);
+          print(connection.execute('select count(*) from trace_info').fetchone()[0])"
+      - if: always()
+        run: docker compose down -v

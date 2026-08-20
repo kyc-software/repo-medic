@@ -67,6 +67,10 @@ def train_models(
     closed_train = [index for index in closed_indices if index < (train_slice.stop or 0)]
     if not closed_train:
         raise ValueError("closed issues are required in both train and test periods")
+    close_targets = np.asarray(
+        [cast(float, records[index].close_days) for index in closed_train], dtype=float
+    )
+    target_cap_days = float(np.quantile(close_targets, 0.6))
     regressor = Pipeline(
         [
             ("tfidf", TfidfVectorizer(ngram_range=(1, 2), min_df=2, max_features=40_000)),
@@ -75,15 +79,16 @@ def train_models(
     )
     regressor.fit(
         [texts[index] for index in closed_train],
-        [cast(float, records[index].close_days) for index in closed_train],
+        np.minimum(close_targets, target_cap_days),
     )
     artifact = ModelArtifact(
         classifier=classifier,
         regressor=regressor,
         classifier_version="tfidf-calibrated-logreg-v1",
-        regressor_version="tfidf-ridge-v1",
+        regressor_version="tfidf-ridge-clipped-v2",
     )
     metrics = evaluate_artifact(records, artifact)
+    metrics["regressor_target_cap_days"] = target_cap_days
     artifact_path.parent.mkdir(parents=True, exist_ok=True)
     joblib.dump(artifact, artifact_path)
     mlflow.set_tracking_uri(tracking_uri)

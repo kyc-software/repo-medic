@@ -50,6 +50,8 @@ RepoMedic uses chronological 70/15/15 splits. TF-IDF fits inside each sklearn pi
 
 Offline fixture smoke on 48 balanced synthetic issues produced macro-F1 `1.0`, macro-recall `1.0`, close-time MAE `2.55` days, and median absolute error `2.34` days. These values prove training, artifact, and MLflow plumbing only. They are not portfolio quality claims. Replace them with live corpus metrics before interview.
 
+Live 1,000-issue run on August 20, 2026 produced macro-F1 `0.746` against a `0.086` majority baseline. Sparse Ridge on raw close days failed its baseline because a few long-lived issues dominated training. Capping training targets at the training-period 60th percentile reduced chronological test MAE to `11.41` days against the `11.50`-day median baseline. Gain is small. Treat close time as a rough workload estimate, not a deadline.
+
 ## Three Efficient Learning Resources
 
 Use these in order:

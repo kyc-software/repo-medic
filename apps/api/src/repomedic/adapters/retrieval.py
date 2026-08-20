@@ -1,11 +1,10 @@
 """Content-hash embedding cache and embedded Chroma retrieval."""
 
-import asyncio
 import hashlib
 import json
 import sqlite3
 from pathlib import Path
-from typing import cast
+from typing import Protocol, cast
 
 import chromadb
 import numpy as np
@@ -59,17 +58,21 @@ class OpenAIEmbeddingClient:
 
     async def embed(self, text: str) -> list[float]:
         content_hash = hashlib.sha256(text.encode()).hexdigest()
-        cached = await asyncio.to_thread(self._cache.get, content_hash, self._model)
+        cached = self._cache.get(content_hash, self._model)
         if cached is not None:
             return cached
         response = await self._client.embeddings.create(model=self._model, input=text)
         vector = response.data[0].embedding
-        await asyncio.to_thread(self._cache.put, content_hash, self._model, vector)
+        self._cache.put(content_hash, self._model, vector)
         return vector
 
 
+class EmbeddingClient(Protocol):
+    async def embed(self, text: str) -> list[float]: ...
+
+
 class ChromaRetriever:
-    def __init__(self, path: Path, embeddings: OpenAIEmbeddingClient) -> None:
+    def __init__(self, path: Path, embeddings: EmbeddingClient) -> None:
         self._client = chromadb.PersistentClient(path=str(path))
         self._collection = self._client.get_or_create_collection(
             "repomedic", metadata={"hnsw:space": "cosine"}
@@ -77,6 +80,7 @@ class ChromaRetriever:
         self._embeddings = embeddings
 
     async def index(self, chunks: tuple[CorpusChunk, ...]) -> int:
+        expected_ids = {chunk.source_id for chunk in chunks}
         for chunk in chunks:
             vector = await self._embeddings.embed(chunk.text)
             metadata = {
@@ -92,7 +96,13 @@ class ChromaRetriever:
                 documents=[chunk.text],
                 metadatas=[metadata],
             )
+        stale_ids = set(self.source_ids()) - expected_ids
+        if stale_ids:
+            self._collection.delete(ids=sorted(stale_ids))
         return len(chunks)
+
+    def source_ids(self) -> tuple[str, ...]:
+        return tuple(str(source_id) for source_id in self._collection.get(include=[])["ids"])
 
     async def retrieve(self, submission: IssueSubmission) -> tuple[EvidenceItem, ...]:
         return await self.retrieve_text(f"{submission.title}\n\n{submission.body}")
