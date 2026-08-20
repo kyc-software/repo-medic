@@ -1,0 +1,61 @@
+services:
+  api:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+    environment:
+      REPOMEDIC_MODE: ${REPOMEDIC_MODE:-demo}
+      REPOMEDIC_DATABASE_URL: sqlite+aiosqlite:///./data/repomedic.db
+      REPOMEDIC_CHECKPOINT_PATH: ./data/checkpoints.sqlite
+      REPOMEDIC_CHROMA_PATH: ./data/chroma
+      REPOMEDIC_MODEL_PATH: ./data/models
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      GITHUB_TOKEN: ${GITHUB_TOKEN:-}
+      MLFLOW_TRACKING_URI: http://mlflow:5001
+    ports:
+      - "8000:8000"
+    volumes:
+      - repomedic-data:/app/data
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/api/v1/health')"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    depends_on:
+      - mlflow
+
+  web:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+      args:
+        NEXT_PUBLIC_API_BASE_URL: http://localhost:8000
+    depends_on:
+      api:
+        condition: service_healthy
+    ports:
+      - "3000:3000"
+
+  mlflow:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+    command:
+      - mlflow
+      - server
+      - --host
+      - 0.0.0.0
+      - --port
+      - "5001"
+      - --backend-store-uri
+      - sqlite:///data/mlflow.db
+      - --default-artifact-root
+      - /data/mlartifacts
+    ports:
+      - "5001:5001"
+    volumes:
+      - mlflow-data:/data
+
+volumes:
+  repomedic-data:
+  mlflow-data:

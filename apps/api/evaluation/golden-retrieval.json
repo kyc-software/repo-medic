@@ -1,0 +1,102 @@
+[
+  {
+    "case_id": "pipeline-leakage",
+    "query": "How can Pipeline prevent preprocessing data leakage?",
+    "relevant_source_ids": ["docs-common-pitfalls", "docs-pipeline"]
+  },
+  {
+    "case_id": "validation-dtype",
+    "query": "Estimator fails when float dtype changes during prediction",
+    "relevant_source_ids": ["code-validation", "docs-validation"]
+  },
+  {
+    "case_id": "not-fitted",
+    "query": "Estimator raises NotFittedError after construction",
+    "relevant_source_ids": ["code-validation", "docs-common-pitfalls"]
+  },
+  {
+    "case_id": "sparse-input",
+    "query": "Estimator rejects sparse matrix input format",
+    "relevant_source_ids": ["code-validation", "docs-validation"]
+  },
+  {
+    "case_id": "cross-validation",
+    "query": "Unexpected cross validation score and split behavior",
+    "relevant_source_ids": ["docs-cross-validation", "code-split"]
+  },
+  {
+    "case_id": "random-state",
+    "query": "Results change between repeated estimator runs",
+    "relevant_source_ids": ["docs-randomness", "docs-common-pitfalls"]
+  },
+  {
+    "case_id": "feature-names",
+    "query": "Feature names mismatch between fit and predict",
+    "relevant_source_ids": ["code-validation", "docs-validation"]
+  },
+  {
+    "case_id": "custom-estimator",
+    "query": "How should a custom estimator implement get_params?",
+    "relevant_source_ids": ["docs-developers", "code-base-estimator"]
+  },
+  {
+    "case_id": "scoring",
+    "query": "Choose metric for imbalanced classification",
+    "relevant_source_ids": ["docs-model-evaluation", "docs-cross-validation"]
+  },
+  {
+    "case_id": "calibration",
+    "query": "Classifier predict_proba confidence is poorly calibrated",
+    "relevant_source_ids": ["docs-calibration", "docs-model-evaluation"]
+  },
+  {
+    "case_id": "column-transformer",
+    "query": "Mixed numeric and categorical preprocessing pipeline",
+    "relevant_source_ids": ["docs-compose", "docs-pipeline"]
+  },
+  {
+    "case_id": "missing-values",
+    "query": "Estimator input contains NaN values",
+    "relevant_source_ids": ["docs-impute", "code-validation"]
+  },
+  {
+    "case_id": "convergence",
+    "query": "Linear model emits convergence warning",
+    "relevant_source_ids": ["docs-linear-model", "docs-preprocessing"]
+  },
+  {
+    "case_id": "clone",
+    "query": "Cloned estimator unexpectedly retains fitted state",
+    "relevant_source_ids": ["code-base-estimator", "docs-developers"]
+  },
+  {
+    "case_id": "metadata-routing",
+    "query": "Pass sample weights through pipeline",
+    "relevant_source_ids": ["docs-metadata-routing", "docs-pipeline"]
+  },
+  {
+    "case_id": "array-api",
+    "query": "Use Array API compatible inputs",
+    "relevant_source_ids": ["docs-array-api", "code-validation"]
+  },
+  {
+    "case_id": "parallelism",
+    "query": "Control nested joblib parallelism and CPU use",
+    "relevant_source_ids": ["docs-parallelism", "docs-computing"]
+  },
+  {
+    "case_id": "persistence",
+    "query": "Safely persist and load a trained estimator",
+    "relevant_source_ids": ["docs-model-persistence", "docs-security"]
+  },
+  {
+    "case_id": "inspection",
+    "query": "Explain model predictions with permutation importance",
+    "relevant_source_ids": ["docs-permutation-importance", "docs-inspection"]
+  },
+  {
+    "case_id": "minimal-reproducer",
+    "query": "What information should a bug report include?",
+    "relevant_source_ids": ["docs-contributing", "issue-28990"]
+  }
+]

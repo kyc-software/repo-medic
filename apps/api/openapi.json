@@ -1,0 +1,1340 @@
+{
+  "components": {
+    "schemas": {
+      "ApproveDecision": {
+        "additionalProperties": false,
+        "properties": {
+          "kind": {
+            "const": "approve",
+            "default": "approve",
+            "title": "Kind",
+            "type": "string"
+          }
+        },
+        "title": "ApproveDecision",
+        "type": "object"
+      },
+      "AwaitingReviewRun": {
+        "additionalProperties": false,
+        "properties": {
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "draft": {
+            "$ref": "#/components/schemas/ResolutionBrief"
+          },
+          "evidence": {
+            "items": {
+              "$ref": "#/components/schemas/EvidenceItem"
+            },
+            "title": "Evidence",
+            "type": "array"
+          },
+          "prediction": {
+            "$ref": "#/components/schemas/PredictionBundle"
+          },
+          "review_reasons": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Review Reasons",
+            "type": "array"
+          },
+          "run_id": {
+            "format": "uuid",
+            "title": "Run Id",
+            "type": "string"
+          },
+          "status": {
+            "const": "awaiting_review",
+            "default": "awaiting_review",
+            "title": "Status",
+            "type": "string"
+          },
+          "submission": {
+            "$ref": "#/components/schemas/IssueSubmission"
+          },
+          "updated_at": {
+            "format": "date-time",
+            "title": "Updated At",
+            "type": "string"
+          }
+        },
+        "required": [
+          "run_id",
+          "submission",
+          "prediction",
+          "evidence",
+          "draft",
+          "review_reasons",
+          "created_at",
+          "updated_at"
+        ],
+        "title": "AwaitingReviewRun",
+        "type": "object"
+      },
+      "CompletedEventPayload": {
+        "additionalProperties": false,
+        "properties": {
+          "snapshot": {
+            "$ref": "#/components/schemas/CompletedRun"
+          }
+        },
+        "required": [
+          "snapshot"
+        ],
+        "title": "CompletedEventPayload",
+        "type": "object"
+      },
+      "CompletedRun": {
+        "additionalProperties": false,
+        "properties": {
+          "brief": {
+            "$ref": "#/components/schemas/ResolutionBrief"
+          },
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "evidence": {
+            "items": {
+              "$ref": "#/components/schemas/EvidenceItem"
+            },
+            "title": "Evidence",
+            "type": "array"
+          },
+          "prediction": {
+            "$ref": "#/components/schemas/PredictionBundle"
+          },
+          "run_id": {
+            "format": "uuid",
+            "title": "Run Id",
+            "type": "string"
+          },
+          "status": {
+            "const": "completed",
+            "default": "completed",
+            "title": "Status",
+            "type": "string"
+          },
+          "submission": {
+            "$ref": "#/components/schemas/IssueSubmission"
+          },
+          "updated_at": {
+            "format": "date-time",
+            "title": "Updated At",
+            "type": "string"
+          }
+        },
+        "required": [
+          "run_id",
+          "submission",
+          "prediction",
+          "evidence",
+          "brief",
+          "created_at",
+          "updated_at"
+        ],
+        "title": "CompletedRun",
+        "type": "object"
+      },
+      "DecisionAccepted": {
+        "properties": {
+          "run_id": {
+            "format": "uuid",
+            "title": "Run Id",
+            "type": "string"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "run_id",
+          "status"
+        ],
+        "title": "DecisionAccepted",
+        "type": "object"
+      },
+      "EditDecision": {
+        "additionalProperties": false,
+        "properties": {
+          "brief": {
+            "$ref": "#/components/schemas/ResolutionBrief"
+          },
+          "kind": {
+            "const": "edit",
+            "default": "edit",
+            "title": "Kind",
+            "type": "string"
+          }
+        },
+        "required": [
+          "brief"
+        ],
+        "title": "EditDecision",
+        "type": "object"
+      },
+      "EvidenceItem": {
+        "additionalProperties": false,
+        "properties": {
+          "excerpt": {
+            "title": "Excerpt",
+            "type": "string"
+          },
+          "issue_number": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Issue Number"
+          },
+          "path": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Path"
+          },
+          "repository_sha": {
+            "title": "Repository Sha",
+            "type": "string"
+          },
+          "score": {
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "Score",
+            "type": "number"
+          },
+          "source_id": {
+            "title": "Source Id",
+            "type": "string"
+          },
+          "source_kind": {
+            "$ref": "#/components/schemas/SourceKind"
+          },
+          "url": {
+            "format": "uri",
+            "maxLength": 2083,
+            "minLength": 1,
+            "title": "Url",
+            "type": "string"
+          }
+        },
+        "required": [
+          "source_id",
+          "source_kind",
+          "url",
+          "repository_sha",
+          "excerpt",
+          "score"
+        ],
+        "title": "EvidenceItem",
+        "type": "object"
+      },
+      "FailedEventPayload": {
+        "additionalProperties": false,
+        "properties": {
+          "snapshot": {
+            "$ref": "#/components/schemas/FailedRun"
+          }
+        },
+        "required": [
+          "snapshot"
+        ],
+        "title": "FailedEventPayload",
+        "type": "object"
+      },
+      "FailedRun": {
+        "additionalProperties": false,
+        "properties": {
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "error_code": {
+            "title": "Error Code",
+            "type": "string"
+          },
+          "retryable": {
+            "title": "Retryable",
+            "type": "boolean"
+          },
+          "run_id": {
+            "format": "uuid",
+            "title": "Run Id",
+            "type": "string"
+          },
+          "status": {
+            "const": "failed",
+            "default": "failed",
+            "title": "Status",
+            "type": "string"
+          },
+          "submission": {
+            "$ref": "#/components/schemas/IssueSubmission"
+          },
+          "updated_at": {
+            "format": "date-time",
+            "title": "Updated At",
+            "type": "string"
+          }
+        },
+        "required": [
+          "run_id",
+          "submission",
+          "error_code",
+          "retryable",
+          "created_at",
+          "updated_at"
+        ],
+        "title": "FailedRun",
+        "type": "object"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "title": "Detail",
+            "type": "array"
+          }
+        },
+        "title": "HTTPValidationError",
+        "type": "object"
+      },
+      "HealthResponse": {
+        "properties": {
+          "status": {
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "status"
+        ],
+        "title": "HealthResponse",
+        "type": "object"
+      },
+      "InvestigationStep": {
+        "additionalProperties": false,
+        "properties": {
+          "action": {
+            "title": "Action",
+            "type": "string"
+          },
+          "citation_ids": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Citation Ids",
+            "type": "array"
+          },
+          "rank": {
+            "minimum": 1.0,
+            "title": "Rank",
+            "type": "integer"
+          },
+          "rationale": {
+            "title": "Rationale",
+            "type": "string"
+          }
+        },
+        "required": [
+          "rank",
+          "action",
+          "rationale",
+          "citation_ids"
+        ],
+        "title": "InvestigationStep",
+        "type": "object"
+      },
+      "IssueSubmission": {
+        "additionalProperties": false,
+        "properties": {
+          "body": {
+            "maxLength": 20000,
+            "minLength": 10,
+            "title": "Body",
+            "type": "string"
+          },
+          "client_request_id": {
+            "maxLength": 100,
+            "minLength": 8,
+            "title": "Client Request Id",
+            "type": "string"
+          },
+          "title": {
+            "maxLength": 300,
+            "minLength": 4,
+            "title": "Title",
+            "type": "string"
+          }
+        },
+        "required": [
+          "client_request_id",
+          "title",
+          "body"
+        ],
+        "title": "IssueSubmission",
+        "type": "object"
+      },
+      "IssueType": {
+        "enum": [
+          "bug",
+          "documentation",
+          "feature",
+          "question"
+        ],
+        "title": "IssueType",
+        "type": "string"
+      },
+      "PhaseEventPayload": {
+        "additionalProperties": false,
+        "properties": {
+          "phase": {
+            "$ref": "#/components/schemas/RunningPhase"
+          },
+          "snapshot": {
+            "$ref": "#/components/schemas/RunningRun"
+          }
+        },
+        "required": [
+          "phase",
+          "snapshot"
+        ],
+        "title": "PhaseEventPayload",
+        "type": "object"
+      },
+      "PredictionBundle": {
+        "additionalProperties": false,
+        "properties": {
+          "calibrated_confidence": {
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "Calibrated Confidence",
+            "type": "number"
+          },
+          "classifier_version": {
+            "title": "Classifier Version",
+            "type": "string"
+          },
+          "issue_type": {
+            "$ref": "#/components/schemas/IssueType"
+          },
+          "predicted_close_days": {
+            "minimum": 0.0,
+            "title": "Predicted Close Days",
+            "type": "number"
+          },
+          "regressor_version": {
+            "title": "Regressor Version",
+            "type": "string"
+          }
+        },
+        "required": [
+          "issue_type",
+          "calibrated_confidence",
+          "predicted_close_days",
+          "classifier_version",
+          "regressor_version"
+        ],
+        "title": "PredictionBundle",
+        "type": "object"
+      },
+      "QueuedEventPayload": {
+        "additionalProperties": false,
+        "properties": {
+          "status": {
+            "const": "queued",
+            "default": "queued",
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "title": "QueuedEventPayload",
+        "type": "object"
+      },
+      "QueuedRun": {
+        "additionalProperties": false,
+        "properties": {
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "run_id": {
+            "format": "uuid",
+            "title": "Run Id",
+            "type": "string"
+          },
+          "status": {
+            "const": "queued",
+            "default": "queued",
+            "title": "Status",
+            "type": "string"
+          },
+          "submission": {
+            "$ref": "#/components/schemas/IssueSubmission"
+          }
+        },
+        "required": [
+          "run_id",
+          "submission",
+          "created_at"
+        ],
+        "title": "QueuedRun",
+        "type": "object"
+      },
+      "ReadyResponse": {
+        "properties": {
+          "checks": {
+            "additionalProperties": {
+              "type": "boolean"
+            },
+            "title": "Checks",
+            "type": "object"
+          },
+          "mode": {
+            "title": "Mode",
+            "type": "string"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "status",
+          "mode",
+          "checks"
+        ],
+        "title": "ReadyResponse",
+        "type": "object"
+      },
+      "RejectDecision": {
+        "additionalProperties": false,
+        "properties": {
+          "kind": {
+            "const": "reject",
+            "default": "reject",
+            "title": "Kind",
+            "type": "string"
+          },
+          "reason": {
+            "maxLength": 1000,
+            "minLength": 3,
+            "title": "Reason",
+            "type": "string"
+          }
+        },
+        "required": [
+          "reason"
+        ],
+        "title": "RejectDecision",
+        "type": "object"
+      },
+      "RejectedEventPayload": {
+        "additionalProperties": false,
+        "properties": {
+          "snapshot": {
+            "$ref": "#/components/schemas/RejectedRun"
+          }
+        },
+        "required": [
+          "snapshot"
+        ],
+        "title": "RejectedEventPayload",
+        "type": "object"
+      },
+      "RejectedRun": {
+        "additionalProperties": false,
+        "properties": {
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "reason": {
+            "title": "Reason",
+            "type": "string"
+          },
+          "run_id": {
+            "format": "uuid",
+            "title": "Run Id",
+            "type": "string"
+          },
+          "status": {
+            "const": "rejected",
+            "default": "rejected",
+            "title": "Status",
+            "type": "string"
+          },
+          "submission": {
+            "$ref": "#/components/schemas/IssueSubmission"
+          },
+          "updated_at": {
+            "format": "date-time",
+            "title": "Updated At",
+            "type": "string"
+          }
+        },
+        "required": [
+          "run_id",
+          "submission",
+          "reason",
+          "created_at",
+          "updated_at"
+        ],
+        "title": "RejectedRun",
+        "type": "object"
+      },
+      "ResolutionBrief": {
+        "additionalProperties": false,
+        "properties": {
+          "citation_ids": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Citation Ids",
+            "type": "array"
+          },
+          "investigation_steps": {
+            "items": {
+              "$ref": "#/components/schemas/InvestigationStep"
+            },
+            "title": "Investigation Steps",
+            "type": "array"
+          },
+          "missing_information": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Missing Information",
+            "type": "array"
+          },
+          "summary": {
+            "title": "Summary",
+            "type": "string"
+          }
+        },
+        "required": [
+          "summary",
+          "investigation_steps",
+          "missing_information",
+          "citation_ids"
+        ],
+        "title": "ResolutionBrief",
+        "type": "object"
+      },
+      "ReviewEventPayload": {
+        "additionalProperties": false,
+        "properties": {
+          "snapshot": {
+            "$ref": "#/components/schemas/AwaitingReviewRun"
+          }
+        },
+        "required": [
+          "snapshot"
+        ],
+        "title": "ReviewEventPayload",
+        "type": "object"
+      },
+      "ReviewRequiredEvent": {
+        "additionalProperties": false,
+        "properties": {
+          "kind": {
+            "const": "review.required",
+            "title": "Kind",
+            "type": "string"
+          },
+          "payload": {
+            "$ref": "#/components/schemas/ReviewEventPayload"
+          },
+          "run_id": {
+            "format": "uuid",
+            "title": "Run Id",
+            "type": "string"
+          },
+          "sequence": {
+            "minimum": 1.0,
+            "title": "Sequence",
+            "type": "integer"
+          },
+          "timestamp": {
+            "format": "date-time",
+            "title": "Timestamp",
+            "type": "string"
+          }
+        },
+        "required": [
+          "sequence",
+          "run_id",
+          "timestamp",
+          "kind",
+          "payload"
+        ],
+        "title": "ReviewRequiredEvent",
+        "type": "object"
+      },
+      "RunAccepted": {
+        "properties": {
+          "events_url": {
+            "format": "uri",
+            "maxLength": 2083,
+            "minLength": 1,
+            "title": "Events Url",
+            "type": "string"
+          },
+          "run_id": {
+            "format": "uuid",
+            "title": "Run Id",
+            "type": "string"
+          },
+          "snapshot_url": {
+            "format": "uri",
+            "maxLength": 2083,
+            "minLength": 1,
+            "title": "Snapshot Url",
+            "type": "string"
+          }
+        },
+        "required": [
+          "run_id",
+          "snapshot_url",
+          "events_url"
+        ],
+        "title": "RunAccepted",
+        "type": "object"
+      },
+      "RunCompletedEvent": {
+        "additionalProperties": false,
+        "properties": {
+          "kind": {
+            "const": "run.completed",
+            "title": "Kind",
+            "type": "string"
+          },
+          "payload": {
+            "$ref": "#/components/schemas/CompletedEventPayload"
+          },
+          "run_id": {
+            "format": "uuid",
+            "title": "Run Id",
+            "type": "string"
+          },
+          "sequence": {
+            "minimum": 1.0,
+            "title": "Sequence",
+            "type": "integer"
+          },
+          "timestamp": {
+            "format": "date-time",
+            "title": "Timestamp",
+            "type": "string"
+          }
+        },
+        "required": [
+          "sequence",
+          "run_id",
+          "timestamp",
+          "kind",
+          "payload"
+        ],
+        "title": "RunCompletedEvent",
+        "type": "object"
+      },
+      "RunFailedEvent": {
+        "additionalProperties": false,
+        "properties": {
+          "kind": {
+            "const": "run.failed",
+            "title": "Kind",
+            "type": "string"
+          },
+          "payload": {
+            "$ref": "#/components/schemas/FailedEventPayload"
+          },
+          "run_id": {
+            "format": "uuid",
+            "title": "Run Id",
+            "type": "string"
+          },
+          "sequence": {
+            "minimum": 1.0,
+            "title": "Sequence",
+            "type": "integer"
+          },
+          "timestamp": {
+            "format": "date-time",
+            "title": "Timestamp",
+            "type": "string"
+          }
+        },
+        "required": [
+          "sequence",
+          "run_id",
+          "timestamp",
+          "kind",
+          "payload"
+        ],
+        "title": "RunFailedEvent",
+        "type": "object"
+      },
+      "RunPhaseEvent": {
+        "additionalProperties": false,
+        "properties": {
+          "kind": {
+            "const": "run.phase",
+            "title": "Kind",
+            "type": "string"
+          },
+          "payload": {
+            "$ref": "#/components/schemas/PhaseEventPayload"
+          },
+          "run_id": {
+            "format": "uuid",
+            "title": "Run Id",
+            "type": "string"
+          },
+          "sequence": {
+            "minimum": 1.0,
+            "title": "Sequence",
+            "type": "integer"
+          },
+          "timestamp": {
+            "format": "date-time",
+            "title": "Timestamp",
+            "type": "string"
+          }
+        },
+        "required": [
+          "sequence",
+          "run_id",
+          "timestamp",
+          "kind",
+          "payload"
+        ],
+        "title": "RunPhaseEvent",
+        "type": "object"
+      },
+      "RunQueuedEvent": {
+        "additionalProperties": false,
+        "properties": {
+          "kind": {
+            "const": "run.queued",
+            "title": "Kind",
+            "type": "string"
+          },
+          "payload": {
+            "$ref": "#/components/schemas/QueuedEventPayload"
+          },
+          "run_id": {
+            "format": "uuid",
+            "title": "Run Id",
+            "type": "string"
+          },
+          "sequence": {
+            "minimum": 1.0,
+            "title": "Sequence",
+            "type": "integer"
+          },
+          "timestamp": {
+            "format": "date-time",
+            "title": "Timestamp",
+            "type": "string"
+          }
+        },
+        "required": [
+          "sequence",
+          "run_id",
+          "timestamp",
+          "kind",
+          "payload"
+        ],
+        "title": "RunQueuedEvent",
+        "type": "object"
+      },
+      "RunRejectedEvent": {
+        "additionalProperties": false,
+        "properties": {
+          "kind": {
+            "const": "run.rejected",
+            "title": "Kind",
+            "type": "string"
+          },
+          "payload": {
+            "$ref": "#/components/schemas/RejectedEventPayload"
+          },
+          "run_id": {
+            "format": "uuid",
+            "title": "Run Id",
+            "type": "string"
+          },
+          "sequence": {
+            "minimum": 1.0,
+            "title": "Sequence",
+            "type": "integer"
+          },
+          "timestamp": {
+            "format": "date-time",
+            "title": "Timestamp",
+            "type": "string"
+          }
+        },
+        "required": [
+          "sequence",
+          "run_id",
+          "timestamp",
+          "kind",
+          "payload"
+        ],
+        "title": "RunRejectedEvent",
+        "type": "object"
+      },
+      "RunningPhase": {
+        "enum": [
+          "predicting",
+          "retrieving",
+          "investigating",
+          "drafting",
+          "reviewing"
+        ],
+        "title": "RunningPhase",
+        "type": "string"
+      },
+      "RunningRun": {
+        "additionalProperties": false,
+        "properties": {
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "phase": {
+            "$ref": "#/components/schemas/RunningPhase"
+          },
+          "run_id": {
+            "format": "uuid",
+            "title": "Run Id",
+            "type": "string"
+          },
+          "status": {
+            "const": "running",
+            "default": "running",
+            "title": "Status",
+            "type": "string"
+          },
+          "submission": {
+            "$ref": "#/components/schemas/IssueSubmission"
+          },
+          "updated_at": {
+            "format": "date-time",
+            "title": "Updated At",
+            "type": "string"
+          }
+        },
+        "required": [
+          "run_id",
+          "submission",
+          "phase",
+          "created_at",
+          "updated_at"
+        ],
+        "title": "RunningRun",
+        "type": "object"
+      },
+      "SourceKind": {
+        "enum": [
+          "documentation",
+          "code",
+          "resolved_issue"
+        ],
+        "title": "SourceKind",
+        "type": "string"
+      },
+      "ValidationError": {
+        "properties": {
+          "ctx": {
+            "title": "Context",
+            "type": "object"
+          },
+          "input": {
+            "title": "Input"
+          },
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "title": "Location",
+            "type": "array"
+          },
+          "msg": {
+            "title": "Message",
+            "type": "string"
+          },
+          "type": {
+            "title": "Error Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError",
+        "type": "object"
+      }
+    }
+  },
+  "info": {
+    "description": "Evidence-backed issue triage for scikit-learn/scikit-learn",
+    "title": "RepoMedic API",
+    "version": "0.1.0"
+  },
+  "openapi": "3.1.0",
+  "paths": {
+    "/api/v1/health": {
+      "get": {
+        "operationId": "health_api_v1_health_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HealthResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Health",
+        "tags": [
+          "operations"
+        ]
+      }
+    },
+    "/api/v1/ready": {
+      "get": {
+        "operationId": "ready_api_v1_ready_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReadyResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Ready",
+        "tags": [
+          "operations"
+        ]
+      }
+    },
+    "/api/v1/triage-runs": {
+      "post": {
+        "operationId": "create_run_api_v1_triage_runs_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/IssueSubmission"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "202": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RunAccepted"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Create Run",
+        "tags": [
+          "triage"
+        ]
+      }
+    },
+    "/api/v1/triage-runs/{run_id}": {
+      "get": {
+        "operationId": "get_run_api_v1_triage_runs__run_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "run_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Run Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "discriminator": {
+                    "mapping": {
+                      "awaiting_review": "#/components/schemas/AwaitingReviewRun",
+                      "completed": "#/components/schemas/CompletedRun",
+                      "failed": "#/components/schemas/FailedRun",
+                      "queued": "#/components/schemas/QueuedRun",
+                      "rejected": "#/components/schemas/RejectedRun",
+                      "running": "#/components/schemas/RunningRun"
+                    },
+                    "propertyName": "status"
+                  },
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/QueuedRun"
+                    },
+                    {
+                      "$ref": "#/components/schemas/RunningRun"
+                    },
+                    {
+                      "$ref": "#/components/schemas/AwaitingReviewRun"
+                    },
+                    {
+                      "$ref": "#/components/schemas/CompletedRun"
+                    },
+                    {
+                      "$ref": "#/components/schemas/RejectedRun"
+                    },
+                    {
+                      "$ref": "#/components/schemas/FailedRun"
+                    }
+                  ],
+                  "title": "Response Get Run Api V1 Triage Runs  Run Id  Get"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Run",
+        "tags": [
+          "triage"
+        ]
+      }
+    },
+    "/api/v1/triage-runs/{run_id}/decision": {
+      "post": {
+        "operationId": "decide_run_api_v1_triage_runs__run_id__decision_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "run_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Run Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "discriminator": {
+                  "mapping": {
+                    "approve": "#/components/schemas/ApproveDecision",
+                    "edit": "#/components/schemas/EditDecision",
+                    "reject": "#/components/schemas/RejectDecision"
+                  },
+                  "propertyName": "kind"
+                },
+                "oneOf": [
+                  {
+                    "$ref": "#/components/schemas/ApproveDecision"
+                  },
+                  {
+                    "$ref": "#/components/schemas/EditDecision"
+                  },
+                  {
+                    "$ref": "#/components/schemas/RejectDecision"
+                  }
+                ],
+                "title": "Decision"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "202": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DecisionAccepted"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Decide Run",
+        "tags": [
+          "triage"
+        ]
+      }
+    },
+    "/api/v1/triage-runs/{run_id}/events": {
+      "get": {
+        "operationId": "stream_events_api_v1_triage_runs__run_id__events_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "run_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Run Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "Last-Event-ID",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Last-Event-Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "discriminator": {
+                    "mapping": {
+                      "review.required": "#/components/schemas/ReviewRequiredEvent",
+                      "run.completed": "#/components/schemas/RunCompletedEvent",
+                      "run.failed": "#/components/schemas/RunFailedEvent",
+                      "run.phase": "#/components/schemas/RunPhaseEvent",
+                      "run.queued": "#/components/schemas/RunQueuedEvent",
+                      "run.rejected": "#/components/schemas/RunRejectedEvent"
+                    },
+                    "propertyName": "kind"
+                  },
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/RunQueuedEvent"
+                    },
+                    {
+                      "$ref": "#/components/schemas/RunPhaseEvent"
+                    },
+                    {
+                      "$ref": "#/components/schemas/ReviewRequiredEvent"
+                    },
+                    {
+                      "$ref": "#/components/schemas/RunCompletedEvent"
+                    },
+                    {
+                      "$ref": "#/components/schemas/RunRejectedEvent"
+                    },
+                    {
+                      "$ref": "#/components/schemas/RunFailedEvent"
+                    }
+                  ],
+                  "title": "Response 200 Stream Events Api V1 Triage Runs  Run Id  Events Get"
+                }
+              },
+              "text/event-stream": {}
+            },
+            "description": "Server-sent RunEvent frames with ordered replay IDs"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Stream Events",
+        "tags": [
+          "triage"
+        ]
+      }
+    }
+  }
+}

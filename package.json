@@ -1,0 +1,36 @@
+{
+  "name": "repomedic",
+  "private": true,
+  "packageManager": "bun@1.3.14",
+  "workspaces": [
+    "apps/web"
+  ],
+  "scripts": {
+    "prepare": "husky",
+    "dev": "concurrently -k -n web,api,mlflow -c cyan,green,magenta \"bun --cwd apps/web dev\" \"MLFLOW_TRACKING_URI=http://127.0.0.1:5001 uv run --project apps/api uvicorn repomedic.transport.app:app --reload --port 8000\" \"uv run --project apps/api mlflow server --host 127.0.0.1 --port 5001 --backend-store-uri sqlite:///data/mlflow.db --default-artifact-root ./data/mlartifacts\"",
+    "check": "biome check . && uv run --project apps/api ruff check apps/api && uv run --project apps/api ruff format --check apps/api",
+    "check:fix": "biome check --write . && uv run --project apps/api ruff check --fix apps/api && uv run --project apps/api ruff format apps/api",
+    "typecheck": "bun --cwd apps/web typecheck && uv run --project apps/api mypy --config-file apps/api/pyproject.toml apps/api/src apps/api/tests",
+    "test": "bun --cwd apps/web test && uv run --project apps/api pytest",
+    "contract:generate": "uv run --project apps/api python -m repomedic.cli.contract && bunx openapi-typescript apps/api/openapi.json -o apps/web/src/lib/api/generated.ts",
+    "contract:check": "python3 scripts/check_contract.py",
+    "build": "bun --cwd apps/web build",
+    "verify": "bun run check && bun run typecheck && bun run test && bun run contract:check && bun run build",
+    "compose:up": "docker compose up --build",
+    "compose:down": "docker compose down"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.5.6",
+    "concurrently": "9.2.1",
+    "husky": "9.1.7",
+    "lint-staged": "16.2.7",
+    "openapi-typescript": "7.13.0"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx,json,jsonc,css}": "biome check --write --no-errors-on-unmatched",
+    "*.py": [
+      "uv run --project apps/api ruff check --fix",
+      "uv run --project apps/api ruff format"
+    ]
+  }
+}
