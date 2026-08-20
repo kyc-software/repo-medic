@@ -2,6 +2,8 @@
 
 RepoMedic is a local-first, evidence-backed issue-triage demo for `scikit-learn/scikit-learn`. It combines chronological predictive ML, Chroma retrieval, two bounded OpenAI roles, LangGraph, human review, FastAPI/SSE, and one Next.js screen.
 
+For the shortest setup, read [Start and use RepoMedic](docs/getting-started.md).
+
 ## Quickstart: free demo mode
 
 Prerequisites: Bun 1.3.14, uv 0.12.5, and Python 3.12.
